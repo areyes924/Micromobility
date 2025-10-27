@@ -65,5 +65,15 @@ def main():
         )
         print(to_ucla.to_string(index=False))
 
+        print("\n=== Top 'UCLA to UCLA' Trips ===")
+        ucla_to_ucla = (
+            trips[trips["ucla_trip_type"] == "UCLA to UCLA"]
+            .groupby(["start_name", "end_name"])
+            .size()
+            .reset_index(name="count")
+            .sort_values("count", ascending=False)
+        )
+        print(ucla_to_ucla.to_string(index=False))
+
 if __name__ == "__main__":
     main()

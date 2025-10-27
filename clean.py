@@ -8,12 +8,11 @@ This script consolidates, cleans, and filters multiple quarterly Metro Bike
 trip datasets for the 2024–2025 academic year into unified, analysis-ready CSVs.
 , and also isolates trips related to UCLA stations.
 
-Assumptions and Notes:
+Notes:
 ----------------------
 - All input CSVs have identical headers and consistent schemas.
 - All numeric columns were prevalidated and are numbers.
-- All timestamps are in local time, consistent across quarters.
-- The script assumes data files exist in the relative paths under `data/raw/`.
+- All timestamps are in local time.
 
 ===========================================================
 '''
