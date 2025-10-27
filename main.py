@@ -1,43 +1,69 @@
 import pandas as pd
 
-# ==================================================
-# Data Loading
-# ==================================================
+def main():
+    # ==================================================
+    # Load Data
+    # ==================================================
+    stations = pd.read_csv("data/raw/metro-bike-share-stations.csv")
+    trips = pd.read_csv("data/processed/metro_trips_ucla_24-25.csv")
 
-station_map = pd.read_csv("data/raw/metro-bike-share-stations-2025-10-01.csv")
-q3_2025 = pd.read_csv("data/raw/metro-trips-2025-q3.csv")
-q2_2025 = pd.read_csv("data/raw/metro-trips-2025-q2.csv")
+    # Normalize headers
+    stations = stations.rename(columns={
+        "Kiosk ID": "station_id",
+        "Kiosk Name": "station_name"
+    })[["station_id", "station_name"]]
 
-df = q2_2025 # When testing, it's nice to just focus on one.
+    # ==================================================
+    # Map Station Names to Trips
+    # ==================================================
+    id_to_name = stations.set_index("station_id")["station_name"].to_dict()
 
-# Store relevant station IDs. We could do this in pandas using station_map
+    # Create readable start/end station columns
+    trips["start_name"] = trips["start_station"].map(id_to_name)
+    trips["end_name"] = trips["end_station"].map(id_to_name)
 
-perloff_id = 4614 # North Campus Station near Bunche/Perloff Halls
-drake_id = 4643 # Drake Stadium Station near Epicuria/Bfit
-gateway_id1 = 4613 # Gateway Plaza Station near Bus stops/Pauley Pavilion
-gateway_id2 = 4665 # For some reason, there are two station IDs for gateway plaza. This second one doesn't seem to be in use.
+    # Drop trips missing station names
+    trips = trips.dropna(subset=["start_name", "end_name"])
 
-# ==================================================
-# Cleaning
-# ==================================================
+    # ==================================================
+    # Find Most Common Trips Involving UCLA
+    # ==================================================
+    top_trips = (
+        trips.groupby(["start_name", "end_name"])
+        .size()
+        .reset_index(name="count")
+        .sort_values("count", ascending=False)
+    )
 
+    # Display top 10 overall
+    print("\n=== Top 10 Most Common Trips Involving UCLA ===")
+    print(top_trips.head(10).to_string(index=False))
 
-# Contingency in case Gateway_id2 is used.
-gateway_id2_rides = df[(df["start_station"] == gateway_id2) | (df["end_station"] == gateway_id2)]
-if len(gateway_id2_rides) != 0:
-    print(len(gateway_id2_rides) + " RIDES FROM THE OTHER ID OF GATEWAY PLAZA DETECTED. TAKE THIS INTO ACCOUNT")
-else: print("Gateway ID2 check OK")
+    # ==================================================
+    # Breakdown by Direction (From vs To UCLA)
+    # ==================================================
+    if "ucla_trip_type" in trips.columns:
+        print("\n=== Top 5 'From UCLA' Trips ===")
+        from_ucla = (
+            trips[trips["ucla_trip_type"] == "From UCLA"]
+            .groupby(["start_name", "end_name"])
+            .size()
+            .reset_index(name="count")
+            .sort_values("count", ascending=False)
+            .head(5)
+        )
+        print(from_ucla.to_string(index=False))
 
-# print (station_map.info())
-# print (q3_2025.info())
+        print("\n=== Top 5 'To UCLA' Trips ===")
+        to_ucla = (
+            trips[trips["ucla_trip_type"] == "To UCLA"]
+            .groupby(["start_name", "end_name"])
+            .size()
+            .reset_index(name="count")
+            .sort_values("count", ascending=False)
+            .head(5)
+        )
+        print(to_ucla.to_string(index=False))
 
-# ==================================================
-# Analysis
-# ==================================================
-
-# Filter for rides that start at drake_id and end at gateway_id
-rides = q2_2025[(q2_2025["start_station"] == drake_id) & (q2_2025["end_station"] == gateway_id1)]
-
-# Count the total number of such rides
-total_rides = len(rides)
-print(f"Total rides from Drake to Bus Stop: {total_rides}")
+if __name__ == "__main__":
+    main()
