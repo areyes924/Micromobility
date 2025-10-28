@@ -23,13 +23,13 @@ pip install requests-cache retry-requests numpy pandas
 # Define Constant Parameters
 # ======================
 
-target = "Westside"
+target = "North Hollywood"
 
 # These are all in the approximate center of the defined regions.
 LAT_LONG = {
     "DTLA": (34.05661, -118.237213), # Union Station Coordinates
     "Westside": (34.022449,-118.438332), # Barrington and National Coordinates
-    "NoHo": (34.16552,-118.375153) # North Hollywood Plaza Coordinates
+    "North Hollywood": (34.16552,-118.375153) # North Hollywood Plaza Coordinates
 }
 
 LATITUDE = LAT_LONG[target][0]
