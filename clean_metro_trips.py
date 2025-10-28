@@ -27,6 +27,7 @@ ACADEMIC_START = pd.Timestamp("2024-09-23")
 ACADEMIC_END   = pd.Timestamp("2025-09-22")
 VIRTUAL_STATION = 3000
 UCLA_IDS = [4614, 4643, 4613]  # perloff, drake, gateway
+QUARTERS = ["2024-q3", "2024-q4", "2025-q1", "2025-q2", "2025-q3"]
 
 ROUND_TRIP_BOUNDARY = 15 # Delete all round trips under this number of minutes
 MAX_HOURS = 10 # Maximum hours 
@@ -36,12 +37,10 @@ MAX_HOURS = 10 # Maximum hours
 # ======================
 
 # Note that these all have identical column headers, making everything much easier.
-q3_2024 = pd.read_csv("data/raw/metro-trips-2024-q3.csv")
-q4_2024 = pd.read_csv("data/raw/metro-trips-2024-q4.csv")
-q1_2025 = pd.read_csv("data/raw/metro-trips-2025-q1.csv")
-q2_2025 = pd.read_csv("data/raw/metro-trips-2025-q2.csv")
-q3_2025 = pd.read_csv("data/raw/metro-trips-2025-q3.csv")
-trips = pd.concat((q3_2024, q4_2024, q1_2025, q2_2025, q3_2025), ignore_index=True)
+trips = pd.concat(
+    [pd.read_csv("data/raw" / f"metro-trips-{q}.csv") for q in QUARTERS],
+    ignore_index=True
+)
 
 # ======================
 # Delete Unnecessary Columns and Standardize Names
