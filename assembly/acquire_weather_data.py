@@ -6,15 +6,18 @@ from retry_requests import retry
 '''
 Los Angeles Weather Data Acquisition Script
 
-[Summary]
-
-https://open-meteo.com/en/docs/historical-weather-api?start_date=2024-09-23&end_date=2025-09-22&timezone=America%2FLos_Angeles&hourly=temperature_2m,precipitation,rain,wind_speed_10m,wind_gusts_10m,relative_humidity_2m,apparent_temperature,cloud_cover&latitude=34.056278&longitude=-118.231773&daily=temperature_2m_mean,rain_sum,wind_speed_10m_max
+This script retrieves and formats hourly and daily weather data from the
+Open-Meteo Historical API for selected Los Angeles regions during 2024–2025.
+Outputs are standardized CSVs aligned with micromobility trip datasets.
 
 Notes:
 ----------------------
-- 
-pip install openmeteo-requests
-pip install requests-cache retry-requests numpy pandas
+- Includes region selector (DTLA, Westside, North Hollywood).
+- Handles DST duplicates and missing data flags.
+- Adds date, hour, month, and weekend columns for modeling.
+
+Data/Python Skeleton from here:
+https://open-meteo.com/en/docs/historical-weather-api?start_date=2024-09-23&end_date=2025-09-22&timezone=America%2FLos_Angeles&hourly=temperature_2m,precipitation,rain,wind_speed_10m,wind_gusts_10m,relative_humidity_2m,apparent_temperature,cloud_cover&latitude=34.056278&longitude=-118.231773&daily=temperature_2m_mean,rain_sum,wind_speed_10m_max
 
 ===========================================================
 '''

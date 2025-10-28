@@ -5,11 +5,10 @@ from datetime import datetime
 '''
 Metro Bike Trip + Weather Panel Assembly Script
 
-[Summary]
-
-Notes:
-----------------------
--
+This script merges Metro trip records with station regions, computes trip
+distances (Haversine), adds time features, and aggregates ridership hourly.
+It joins hourly ridership to region-specific Open-Meteo weather, builds a
+daily panel, and exports standardized CSVs for modeling (hourly & daily).
 
 ===========================================================
 '''
@@ -23,8 +22,8 @@ STATIONS_DATAPATH = "data/raw/metro-bike-share-stations.csv"
 WEATHER_DATAPATH = "data/processed/weather_data"
 REGIONS = ["Westside", "DTLA", "North Hollywood"]
 
-HOURLY_OUTPUT_PATH = "data/processed/panels/hourly.csv"
-DAILY_OUTPUT_PATH = "data/processed/panels/daily.csv"
+HOURLY_OUTPUT_PATH = "data/processed/panels/hourly_24-25.csv"
+DAILY_OUTPUT_PATH = "data/processed/panels/daily_24-25.csv"
 
 
 # ======================
@@ -177,7 +176,7 @@ daily_panel = (
 # ======================
 # Export as CSV
 # ======================
-"""
+#"""
 hourly_merged.to_csv(
     HOURLY_OUTPUT_PATH,
     index=False,
@@ -194,7 +193,7 @@ daily_panel.to_csv(
 )
 
 print(f"Exported {len(daily_panel)} datapoints to {DAILY_OUTPUT_PATH}.")
-"""
+#"""
 # ======================
 # Visualizations
 # ======================
