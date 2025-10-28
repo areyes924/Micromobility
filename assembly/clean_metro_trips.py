@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 '''
-UCLA Metro Bike Trip Data Cleaning Script
+Metro Bike Trip Data Cleaning Script
 
 This script consolidates, cleans, and filters multiple quarterly Metro Bike
 trip datasets for the 2024–2025 academic year into unified, analysis-ready CSVs.
@@ -21,8 +21,8 @@ Notes:
 # Define Constant Parameters
 # ======================
 
-UCLA_OUTPUT_PATH = "data/processed/metro_trips_ucla_24-25.csv"
-GENERAL_OUTPUT_PATH = "data/processed/metro_trips_24-25.csv"
+UCLA_OUTPUT_PATH = "data/processed/metro_trips/metro_trips_ucla_24-25.csv"
+GENERAL_OUTPUT_PATH = "data/processed/metro_trips/metro_trips_24-25.csv"
 ACADEMIC_START = pd.Timestamp("2024-09-23")
 ACADEMIC_END   = pd.Timestamp("2025-09-22")
 VIRTUAL_STATION = 3000
