@@ -178,6 +178,21 @@ daily_dataframe = daily_dataframe.rename(columns={
     # keep *_sum names as-is for clarity
 })
 
+# ==============================================
+# Handle DST duplicate hour (Daylight's Savings.)
+# ==============================================
+hourly_before = len(hourly_dataframe)
+
+# Drop duplicate region-date-hour combos, keeping the first occurrence
+hourly_dataframe = hourly_dataframe.drop_duplicates(
+    subset=["region", "date", "hour"],
+    keep="first"
+)
+
+hourly_after = len(hourly_dataframe)
+print(f"Removed {hourly_before - hourly_after} DST duplicate hour(s). "
+      f"Final hourly rows: {hourly_after}")
+
 # ======================
 # Daily Reformatting
 # ======================
@@ -195,8 +210,6 @@ hourly_dataframe["missing_weather_flag"] = hourly_dataframe[
 
 
 print(hourly_dataframe.info())
-
-
 
 # === QC FLAGS — DAILY ===
 
