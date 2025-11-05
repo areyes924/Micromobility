@@ -49,7 +49,7 @@ hourly_model = hourly.loc[hourly['missing_weather_flag'] == 0].copy()
 # ======================
 
 model = smf.ols(
-    "trip_count ~ temperature_c + rain + weekend_flag + C(region) + C(month) + C(hour)",
+    "trip_count ~ temperature_c + rain + weekend_flag + C(region) + C(hour)",
     data=hourly_model
 ).fit(cov_type='HC1')
 
@@ -57,7 +57,7 @@ summary_text = model.summary().as_text()
 # print(summary_text)
 
 # Save for reproducibility
-with open("results/regression_summary.txt", "w") as f:
+with open("results/regression_summary_no_seasonality.txt", "w") as f:
     f.write(summary_text)
 
 results_table = (
@@ -66,7 +66,7 @@ results_table = (
     .loc[['temperature_c', 'rain', 'weekend_flag']]
 )
 
-# results_table.to_csv("results/elasticity_table.csv", index_label='variable')
+# results_table.to_csv("results/elasticity_table_no_seasonality.csv", index_label='variable')
 
 # ======================
 # Compute elasticities
@@ -80,7 +80,7 @@ results_table['ci_hi'] = 100 * (results_table['coef'] + 1.96 * results_table['se
 
 results_table['adj_r2'] = model.rsquared_adj
 
-results_table.to_csv("results/elasticity_table.csv", index_label="variable")
+results_table.to_csv("results/elasticity_table_no_seasonality.csv", index_label="variable")
 print(results_table)
 
 # ======================
@@ -97,7 +97,7 @@ plt.xlabel("Predicted trip count")
 plt.ylabel("Actual trip count")
 plt.title(f"Predicted vs. Actual Hourly Trips (Adj. R² = {model.rsquared_adj:.2f})")
 plt.tight_layout()
-plt.savefig("plots/predicted_vs_actual_hourly.png", dpi=300)
+plt.savefig("plots/predicted_vs_actual_hourly_no_seasonality.png", dpi=300)
 plt.close()
 
 # ======================

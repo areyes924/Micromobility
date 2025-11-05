@@ -3,8 +3,8 @@
 Dep. Variable:             trip_count   R-squared:                       0.709
 Model:                            OLS   Adj. R-squared:                  0.708
 Method:                 Least Squares   F-statistic:                     894.9
-Date:                Fri, 31 Oct 2025   Prob (F-statistic):               0.00
-Time:                        00:01:55   Log-Likelihood:                -73682.
+Date:                Wed, 05 Nov 2025   Prob (F-statistic):               0.00
+Time:                        02:18:49   Log-Likelihood:                -73682.
 No. Observations:               19163   AIC:                         1.474e+05
 Df Residuals:                   19123   BIC:                         1.478e+05
 Df Model:                          39                                         
