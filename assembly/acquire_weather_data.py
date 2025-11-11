@@ -26,6 +26,9 @@ https://open-meteo.com/en/docs/historical-weather-api?start_date=2024-09-23&end_
 # Define Constant Parameters
 # ======================
 
+START = "2024-09-23"
+END = "2025-09-22"
+
 target = "North Hollywood"
 
 # These are all in the approximate center of the defined regions.
@@ -37,8 +40,6 @@ LAT_LONG = {
 
 LATITUDE = LAT_LONG[target][0]
 LONGITUDE = LAT_LONG[target][1]
-START = "2024-09-23"
-END = "2025-09-22"
 OUTPUT_H = f"data/processed/weather_data/{target}_hourly_24-25.csv"
 OUTPUT_D = f"data/processed/weather_data/{target}_daily_24-25.csv"
 

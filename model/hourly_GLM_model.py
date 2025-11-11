@@ -7,13 +7,13 @@ import statsmodels.discrete.discrete_model as dm
 import matplotlib.pyplot as plt
 
 '''
-[] Script
+Hourly GLM Poisson / NB2 Ridership Model Script
 
-[Summary]
-
-Notes:
-----------------------
-- 
+Fits Poisson and, if overdispersed, Negative Binomial GLMs for hourly Metro Bike
+trips using temperature, rain, and weekend effects with fixed effects and
+clustered SEs. Produces elasticity tables and predicted-vs-actual plots with
+nonnegative predictions.
+ 
 ===========================================================
 '''
 

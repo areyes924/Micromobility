@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 
 
 '''
-[] Script
+Hourly OLS Ridership Model Script
 
-[Summary]
+Fits an OLS regression of hourly Metro Bike trips on temperature, rain, and
+weekend effects with region, month, and hour controls. Outputs elasticities,
+fit metrics, and a predicted-vs-actual plot. Serves as a baseline despite flaws
+(such as allowing negative trip predictions).
 
-Notes:
-----------------------
-- 
 ===========================================================
 '''
 

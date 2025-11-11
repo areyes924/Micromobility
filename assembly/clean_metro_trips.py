@@ -21,10 +21,11 @@ Notes:
 # Define Constant Parameters
 # ======================
 
+START = pd.Timestamp("2024-09-23")
+END   = pd.Timestamp("2025-09-22")
+
 UCLA_OUTPUT_PATH = "data/processed/metro_trips/metro_trips_ucla_24-25.csv"
 GENERAL_OUTPUT_PATH = "data/processed/metro_trips/metro_trips_24-25.csv"
-ACADEMIC_START = pd.Timestamp("2024-09-23")
-ACADEMIC_END   = pd.Timestamp("2025-09-22")
 VIRTUAL_STATION = 3000
 UCLA_IDS = [4614, 4643, 4613]  # perloff, drake, gateway
 QUARTERS = ["2024-q3", "2024-q4", "2025-q1", "2025-q2", "2025-q3"]
@@ -94,11 +95,11 @@ trips = trips[
 ].copy()
 print(f"Dropped {initial_count - len(trips)} accidental rides.")
 
-# Remove trips outside desired academic calendar
+# Remove trips outside desired calendar
 initial_count = len(trips)
 trips["start_time"] = pd.to_datetime(trips["start_time"])
 trips["end_time"] = pd.to_datetime(trips["end_time"])
-mask = (trips['start_time'] >= ACADEMIC_START) & (trips['start_time'] < ACADEMIC_END)
+mask = (trips['start_time'] >= START) & (trips['start_time'] < END)
 trips = trips.loc[mask].copy()
 print(f"Dropped {initial_count - len(trips)} rides outside of the academic year, {initial_count} were there before")
 
