@@ -29,7 +29,7 @@ https://open-meteo.com/en/docs/historical-weather-api?start_date=2024-09-23&end_
 START = "2024-09-23"
 END = "2025-09-22"
 
-target = "North Hollywood"
+target = "Westside"
 
 # These are all in the approximate center of the defined regions.
 LAT_LONG = {
@@ -41,7 +41,6 @@ LAT_LONG = {
 LATITUDE = LAT_LONG[target][0]
 LONGITUDE = LAT_LONG[target][1]
 OUTPUT_H = f"data/processed/weather_data/{target}_hourly_24-25.csv"
-OUTPUT_D = f"data/processed/weather_data/{target}_daily_24-25.csv"
 
 # ======================
 # Load Data
@@ -84,14 +83,15 @@ hourly_relative_humidity_2m = hourly.Variables(5).ValuesAsNumpy()
 hourly_apparent_temperature = hourly.Variables(6).ValuesAsNumpy()
 hourly_cloud_cover = hourly.Variables(7).ValuesAsNumpy()
 
-idx = pd.date_range(
-    start=pd.to_datetime(hourly.Time(), unit="s", utc=True)
-             .tz_convert("America/Los_Angeles"),
-    end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True)
-             .tz_convert("America/Los_Angeles"),
-    freq=pd.Timedelta(seconds=hourly.Interval()),
-    inclusive="left"
-).tz_localize(None)  # Drop timezone to match trip dataset
+# Now we're gonna build in utc, then convert to LA, then drop tz
+idx_utc = pd.date_range(
+    start=pd.to_datetime(hourly.Time(),    unit="s", utc=True),
+    end  =pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
+    freq =pd.Timedelta(seconds=hourly.Interval()),
+    inclusive="left",
+)
+idx_local = idx_utc.tz_convert("America/Los_Angeles")
+idx = idx_local.tz_localize(None)  # naive local time
 
 # Create DataFrame dictionary
 hourly_data = {"datetime": idx}
@@ -119,42 +119,9 @@ assert all(len(a) == _expected_h for a in _h_arrays), \
 hourly_dataframe = pd.DataFrame(data = hourly_data)
 hourly_dataframe["region"] = target
 
-# Process daily data. The order of variables needs to be the same as requested.
-daily = response.Daily()
-daily_temperature_2m_mean = daily.Variables(0).ValuesAsNumpy()
-daily_rain_sum = daily.Variables(1).ValuesAsNumpy()
-daily_wind_speed_10m_max = daily.Variables(2).ValuesAsNumpy()
-daily_precipitation_sum = daily.Variables(3).ValuesAsNumpy()
-
-# Build local-time daily index for Los Angeles
-daily_idx = pd.date_range(
-    start=pd.to_datetime(daily.Time(), unit="s", utc=True)
-             .tz_convert("America/Los_Angeles"),
-    end=pd.to_datetime(daily.TimeEnd(), unit="s", utc=True)
-             .tz_convert("America/Los_Angeles"),
-    freq=pd.Timedelta(seconds=daily.Interval()),
-    inclusive="left"
-).tz_localize(None)
-
-daily_data = {"date": daily_idx.date}
-
-daily_data["temperature_2m_mean"] = daily_temperature_2m_mean
-daily_data["rain_sum"] = daily_rain_sum
-daily_data["wind_speed_10m_max"] = daily_wind_speed_10m_max
-daily_data["precipitation_sum"] = daily_precipitation_sum
-
-# === LENGTH CHECK — DAILY ===
-_expected_d = len(daily_idx)
-_d_arrays = [
-    daily_temperature_2m_mean, daily_rain_sum,
-    daily_wind_speed_10m_max, daily_precipitation_sum
-]
-assert all(len(a) == _expected_d for a in _d_arrays), \
-    f"[Daily] Length mismatch: index={_expected_d}, vars={[len(a) for a in _d_arrays]}"
-
-# Create dataframe
-daily_dataframe = pd.DataFrame(data = daily_data)
-daily_dataframe["region"]  = target
+# Helper timestamps for DST handling
+hourly_dataframe["ts_utc"] = idx_utc
+hourly_dataframe["ts_local"] = idx   # same as 'datetime' but explicit
 
 
 # ======================
@@ -170,42 +137,29 @@ hourly_dataframe = hourly_dataframe.rename(columns={
 })
 
 # Model-ready time keys
-hourly_dataframe["date"]         = hourly_dataframe["datetime"].dt.date
-hourly_dataframe["hour"]         = hourly_dataframe["datetime"].dt.hour
-hourly_dataframe["month"]        = hourly_dataframe["datetime"].dt.month
-hourly_dataframe["weekday"]      = hourly_dataframe["datetime"].dt.weekday
+hourly_dataframe["date"]         = hourly_dataframe["ts_local"].dt.date
+hourly_dataframe["hour"]         = hourly_dataframe["ts_local"].dt.hour
+hourly_dataframe["month"]        = hourly_dataframe["ts_local"].dt.month
+hourly_dataframe["weekday"]      = hourly_dataframe["ts_local"].dt.weekday
 hourly_dataframe["weekend_flag"] = hourly_dataframe["weekday"].isin([5, 6]).astype(int)
 
-daily_dataframe = daily_dataframe.rename(columns={
-    "temperature_2m_mean": "temperature_c_mean",
-    "wind_speed_10m_max":  "wind_speed_ms_max",
-    # keep *_sum names as-is for clarity
-})
 
 # ==============================================
 # Handle DST duplicate hour (Daylight's Savings.)
 # ==============================================
 hourly_before = len(hourly_dataframe)
 
-# Drop duplicate region-date-hour combos, keeping the first occurrence
+# Sort by UTC so we always keep the earlier 01:00 when the clock falls back
+hourly_dataframe = hourly_dataframe.sort_values(["region", "ts_utc"])
+
 hourly_dataframe = hourly_dataframe.drop_duplicates(
-    subset=["region", "date", "hour"],
-    keep="first"
+    subset=["region", "date", "hour"], keep="first"
 )
 
 hourly_after = len(hourly_dataframe)
 print(f"Removed {hourly_before - hourly_after} DST duplicate hour(s). "
       f"Final hourly rows: {hourly_after}")
 
-# ======================
-# Daily Reformatting
-# ======================
-
-# Model-ready time keys (convert to datetime first)
-daily_dataframe["date"]         = pd.to_datetime(daily_dataframe["date"])
-daily_dataframe["month"]        = daily_dataframe["date"].dt.month
-daily_dataframe["weekday"]      = daily_dataframe["date"].dt.weekday
-daily_dataframe["weekend_flag"] = daily_dataframe["weekday"].isin([5, 6]).astype(int)
 # === QC FLAGS — HOURLY ===
 
 hourly_dataframe["missing_weather_flag"] = hourly_dataframe[
@@ -215,19 +169,18 @@ hourly_dataframe["missing_weather_flag"] = hourly_dataframe[
 
 print(hourly_dataframe.info())
 
-# === QC FLAGS — DAILY ===
-
-daily_dataframe["missing_weather_flag"] = daily_dataframe[
-    ["temperature_c_mean", "precipitation_sum"]
-].isna().any(axis=1).astype(int)
-print(daily_dataframe.info())
-
-
 # ======================
 # Export to CSV
 # ======================
 
-hourly_dataframe.to_csv(
+cols_out = [
+    "region","date","hour","month","weekday","weekend_flag",
+    "temperature_c","apparent_temperature","rel_humidity",
+    "wind_speed_ms","wind_gust_ms","cloud_cover",
+    "precipitation","rain"
+]
+cols_out = [c for c in cols_out if c in hourly_dataframe.columns]
+hourly_dataframe[cols_out].to_csv(
     OUTPUT_H,
     index=False,
     encoding="utf-8",
@@ -235,12 +188,3 @@ hourly_dataframe.to_csv(
 )
 
 print(f"Saved {len(hourly_dataframe)} hourly datapoints to {OUTPUT_H}.")
-
-daily_dataframe.to_csv(
-    OUTPUT_D,
-    index=False,         # don't write the row index
-    encoding="utf-8",    # standard text encoding
-    float_format="%.6f"
-)
-
-print(f"Saved {len(daily_dataframe)} daily datapoints to {OUTPUT_D}.")

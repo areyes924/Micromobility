@@ -133,12 +133,27 @@ hourly_ridership = (
          )
 )
 
-# Merge with weather
-hourly_merged = hourly_ridership.merge(
-    hourly_weather,
+# Merge weather with trips so zero trip hours are kept now
+hourly_merged = hourly_weather.merge(
+    hourly_ridership,
     on=["region", "date", "hour"],
     how="left"
 )
+if "trip_count" in hourly_merged.columns:
+    hourly_merged["trip_count"] = hourly_merged["trip_count"].fillna(0).astype(int)
+
+# Keep averages as NaN when no trips
+for c in ["avg_distance_mi", "avg_duration_min"]:
+    if c in hourly_merged.columns:
+        # leave NaN, but ensure float dtype
+        hourly_merged[c] = pd.to_numeric(hourly_merged[c], errors="coerce")
+
+# Expect full grid: hours_per_region * number_of_regions
+print("Rows after merge:", len(hourly_merged))
+print("Unique keys:", hourly_merged[["region","date","hour"]].drop_duplicates().shape[0])
+
+# Sanity: no duplicate keys
+assert not hourly_merged.duplicated(["region","date","hour"]).any()
 
 # Mark rows with missing weather
 hourly_merged["missing_weather_flag"] = hourly_merged["temperature_c"].isna().astype(int)
