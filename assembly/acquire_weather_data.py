@@ -2,6 +2,7 @@ import pandas as pd
 import openmeteo_requests
 import requests_cache
 from retry_requests import retry
+import constants
 
 '''
 Los Angeles Weather Data Acquisition Script
@@ -26,8 +27,9 @@ https://open-meteo.com/en/docs/historical-weather-api?start_date=2024-09-23&end_
 # Define Constant Parameters
 # ======================
 
-START = "2024-09-23"
-END = "2025-09-22"
+START = constants.START
+END = constants.END
+tag = constants.TAG
 
 target = "Westside"
 
@@ -40,7 +42,7 @@ LAT_LONG = {
 
 LATITUDE = LAT_LONG[target][0]
 LONGITUDE = LAT_LONG[target][1]
-OUTPUT_H = f"data/processed/weather_data/{target}_hourly_24-25.csv"
+OUTPUT_H = f"data/processed/weather_data/{target}_hourly_{tag}.csv"
 
 # ======================
 # Load Data

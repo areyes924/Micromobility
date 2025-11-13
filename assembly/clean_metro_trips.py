@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import constants
 
 '''
 Metro Bike Trip Data Cleaning Script
@@ -20,10 +21,11 @@ Notes:
 # Define Constant Parameters
 # ======================
 
-START = pd.Timestamp("2024-09-23")
-END   = pd.Timestamp("2025-09-22")
+START = pd.Timestamp(constants.START)
+END   = pd.Timestamp(constants.END)
+tag = constants.TAG
 
-GENERAL_OUTPUT_PATH = "data/processed/metro_trips/metro_trips_24-25.csv"
+GENERAL_OUTPUT_PATH = f"data/processed/metro_trips/metro_trips_{tag}.csv"
 VIRTUAL_STATION = 3000
 QUARTERS = ["2024-q3", "2024-q4", "2025-q1", "2025-q2", "2025-q3"]
 

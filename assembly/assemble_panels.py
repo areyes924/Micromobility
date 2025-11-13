@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
+import assembly.constants as constants
 '''
 Metro Bike Trip + Weather Panel Assembly Script
 
@@ -17,19 +17,21 @@ clean hourly panel, and exports a standardized CSV for modeling.
 # Define Constant Parameters
 # ======================
 
-TRIP_DATAPATH = "data/processed/metro_trips/metro_trips_24-25.csv"
+tag = constants.TAG
+
+TRIP_DATAPATH = f"data/processed/metro_trips/metro_trips_{tag}.csv"
 STATIONS_DATAPATH = "data/raw/metro-bike-share-stations.csv"
 WEATHER_DATAPATH = "data/processed/weather_data"
 REGIONS = ["Westside", "DTLA", "North Hollywood"]
 
-HOURLY_OUTPUT_PATH = "data/processed/panels/hourly_24-25.csv"
+HOURLY_OUTPUT_PATH = f"data/processed/panels/hourly_{tag}.csv"
 
 # ======================
 # Load Data
 # ======================
 
 hourly_weather = pd.concat(
-    [pd.read_csv(f"{WEATHER_DATAPATH}/{r}_hourly_24-25.csv") for r in REGIONS],
+    [pd.read_csv(f"{WEATHER_DATAPATH}/{r}_hourly_{tag}.csv") for r in REGIONS],
     ignore_index=True
 )
 
