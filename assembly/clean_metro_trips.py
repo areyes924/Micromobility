@@ -36,7 +36,7 @@ MAX_HOURS = 10 # Maximum hours
 
 # Note that these all have identical column headers, making everything much easier.
 trips = pd.concat(
-    [pd.read_csv("data/raw" / f"metro-trips-{q}.csv") for q in QUARTERS],
+    [pd.read_csv(f"data/raw/metro-trips-{q}.csv") for q in QUARTERS],
     ignore_index=True
 )
 
@@ -98,7 +98,7 @@ trips["start_time"] = pd.to_datetime(trips["start_time"])
 trips["end_time"] = pd.to_datetime(trips["end_time"])
 mask = (trips['start_time'] >= START) & (trips['start_time'] < END)
 trips = trips.loc[mask].copy()
-print(f"Dropped {initial_count - len(trips)} rides outside of the academic year, {initial_count} were there before")
+print(f"Dropped {initial_count - len(trips)} rides outside of the given range, {initial_count} were there before")
 
 # ======================
 # Export
