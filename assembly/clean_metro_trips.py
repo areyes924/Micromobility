@@ -24,10 +24,8 @@ Notes:
 START = pd.Timestamp("2024-09-23")
 END   = pd.Timestamp("2025-09-22")
 
-UCLA_OUTPUT_PATH = "data/processed/metro_trips/metro_trips_ucla_24-25.csv"
 GENERAL_OUTPUT_PATH = "data/processed/metro_trips/metro_trips_24-25.csv"
 VIRTUAL_STATION = 3000
-UCLA_IDS = [4614, 4643, 4613]  # perloff, drake, gateway
 QUARTERS = ["2024-q3", "2024-q4", "2025-q1", "2025-q2", "2025-q3"]
 
 ROUND_TRIP_BOUNDARY = 15 # Delete all round trips under this number of minutes
@@ -104,36 +102,8 @@ trips = trips.loc[mask].copy()
 print(f"Dropped {initial_count - len(trips)} rides outside of the academic year, {initial_count} were there before")
 
 # ======================
-# Isolate UCLA Trips
-# ======================
-
-ucla_trips = trips[
-    (trips["start_station"].isin(UCLA_IDS)) |
-    (trips["end_station"].isin(UCLA_IDS))
-].copy()
-ucla_trips["ucla_trip_type"] = np.select(
-    [
-        (ucla_trips["start_station"].isin(UCLA_IDS)) & (~ucla_trips["end_station"].isin(UCLA_IDS)),
-        (ucla_trips["end_station"].isin(UCLA_IDS)) & (~ucla_trips["start_station"].isin(UCLA_IDS)),
-    ],
-    ["From UCLA", "To UCLA"],
-    default="UCLA to UCLA"
-)
-print(f"Extracted {len(ucla_trips)} trips involving UCLA stations "
-      f"({len(ucla_trips)/len(trips):.2%} of total).")
-
-# ======================
 # Export
 # ======================
-
-ucla_trips.to_csv(
-    UCLA_OUTPUT_PATH,
-    index=False,
-    encoding="utf-8",
-    float_format="%.6f"
-)
-
-print(f"Saved {len(ucla_trips)} UCLA specific rides to {UCLA_OUTPUT_PATH}.")
 
 trips.to_csv(
     GENERAL_OUTPUT_PATH,
