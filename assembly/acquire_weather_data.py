@@ -7,7 +7,7 @@ from retry_requests import retry
 Los Angeles Weather Data Acquisition Script
 
 This script retrieves and formats hourly and daily weather data from the
-Open-Meteo Historical API for selected Los Angeles regions during 2024–2025.
+Open-Meteo Historical API for selected Los Angeles regions during a given time frame.
 Outputs are standardized CSVs aligned with micromobility trip datasets.
 
 Notes:
