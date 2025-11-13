@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import assembly.constants as constants
+import constants
 '''
 Metro Bike Trip + Weather Panel Assembly Script
 
