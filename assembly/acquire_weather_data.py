@@ -31,7 +31,7 @@ START = constants.START
 END = constants.END
 tag = constants.TAG
 
-target = "Westside"
+target = "DTLA"
 
 # These are all in the approximate center of the defined regions.
 LAT_LONG = {

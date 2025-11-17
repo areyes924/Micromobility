@@ -1,0 +1,14 @@
+Family used for comparison: NB2
+Pearson dispersion (Poisson FULL): 3.005
+
+FULL model (NB2, clustered SEs)
+  Log-likelihood: -65376.023
+  AIC:            130834.046
+  BIC:            131169.280
+  Pseudo R2:      0.2918
+
+REDUCED model (NB2, clustered SEs)
+  Log-likelihood: -65391.361
+  AIC:            130862.722
+  BIC:            131189.780
+  Pseudo R2:      0.2916
