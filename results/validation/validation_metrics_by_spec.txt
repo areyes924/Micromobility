@@ -1,0 +1,9 @@
+FULL model (NB2)
+  Predictive R2: 0.6885
+  RMSE: 11.3640
+  Mean bias: -1.5572
+
+REDUCED model (NB2)
+  Predictive R2: 0.7031
+  RMSE: 11.0947
+  Mean bias: -1.1311
