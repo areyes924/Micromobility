@@ -212,13 +212,13 @@ print(f"Exported {len(hourly_merged)} datapoints to {HOURLY_OUTPUT_PATH}.")
 hourly_merged.groupby(["hour", "region"])["trip_count"].mean().unstack().plot()
 plt.title("Average Hourly Trips by Region")
 plt.ylabel("Trips per Hour")
-plt.savefig("plots/hourly_trips_by_region.png")
+plt.savefig("plots/assembly/hourly_trips_by_region.png")
 
 # Temperature vs Trips
 plt.scatter(hourly_merged["temperature_c"], hourly_merged["trip_count"], alpha=0.3,color = "0.3")
 plt.title("Temperature vs Hourly Trips")
 plt.xlabel("Temperature (°C)")
 plt.ylabel("Trip Count")
-plt.savefig("plots/temp_vs_trips_scatter.png")
+plt.savefig("plots/assembly/temp_vs_trips_scatter.png")
 
 
