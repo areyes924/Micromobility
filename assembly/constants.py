@@ -4,6 +4,10 @@
 # END   = "2025-03-31"
 # TAG = "train"
 
-START = "2025-04-01"
+# START = "2025-04-01"
+# END   = "2025-09-30"
+# TAG = "validate"
+
+START = "2024-07-01"
 END   = "2025-09-30"
-TAG = "validate"
+TAG   = "24-25"

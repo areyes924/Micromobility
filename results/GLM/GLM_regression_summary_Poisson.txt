@@ -5,8 +5,8 @@ Model:                            GLM   Df Residuals:                    26237
 Model Family:                 Poisson   Df Model:                           39
 Link Function:                    Log   Scale:                          1.0000
 Method:                          IRLS   Log-Likelihood:                -76428.
-Date:                Mon, 17 Nov 2025   Deviance:                       71535.
-Time:                        12:34:18   Pearson chi2:                 7.88e+04
+Date:                Sat, 03 Jan 2026   Deviance:                       71535.
+Time:                        00:12:19   Pearson chi2:                 7.88e+04
 No. Iterations:                     8   Pseudo R-squ. (CS):              1.000
 Covariance Type:              cluster                                         
 ================================================================================================

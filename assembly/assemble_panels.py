@@ -39,7 +39,7 @@ trips = pd.read_csv(TRIP_DATAPATH)
 stations = pd.read_csv(STATIONS_DATAPATH)
 
 # ======================
-# Canonical Typing and Normalization
+# Normalization
 # ======================
 
 # Region should be string
@@ -54,12 +54,23 @@ if "precipitation" in hourly_weather.columns:
     hourly_weather = hourly_weather.rename(columns={"precipitation": "precip_mm"})
 if "rain" in hourly_weather.columns:
     hourly_weather = hourly_weather.rename(columns={"rain": "rain_mm"})
+# snowfall
+if "precip_mm" in hourly_weather.columns and "rain_mm" in hourly_weather.columns:
+    hourly_weather["snow_mm"] = (hourly_weather["precip_mm"] - hourly_weather["rain_mm"]).clip(lower=0)   
+else:
+    hourly_weather["snow_mm"] = 0.0  # fallback
+
 
 # Ensure that weather variables are numeric
-for c in ["precip_mm", "rain_mm", "temperature_c", "wind_speed_ms", "wind_gust_ms",
+for c in ["precip_mm", "rain_mm", "snow_mm", "temperature_c", "wind_speed_ms", "wind_gust_ms",
           "rel_humidity", "apparent_temperature", "cloud_cover"]:
     if c in hourly_weather.columns:
         hourly_weather[c] = pd.to_numeric(hourly_weather[c], errors="coerce")
+
+if "snow_mm" in hourly_weather.columns:
+    hourly_weather["snow_mm"] = hourly_weather["snow_mm"].fillna(0.0)
+if "rain_mm" in hourly_weather.columns:
+    hourly_weather["rain_mm"] = hourly_weather["rain_mm"].fillna(0.0)  # optional
 
 # ======================
 # Prepare Trips
@@ -179,8 +190,8 @@ hourly_cols = [
     "trip_count", "avg_distance_mi", "avg_duration_min",
     "temperature_c", "apparent_temperature", "rel_humidity",
     "wind_speed_ms", "wind_gust_ms", "cloud_cover",
-    "precip_mm", "rain_mm",
-    "missing_weather_flag",
+    "precip_mm", "rain_mm", "snow_mm",
+    "missing_weather_flag"
 ]
 hourly_cols = [c for c in hourly_cols if c in hourly_merged.columns]
 hourly_merged = hourly_merged[hourly_cols]
@@ -195,7 +206,7 @@ float_cols = [
         "avg_distance_mi", "avg_duration_min",
         "temperature_c", "apparent_temperature", "rel_humidity",
         "wind_speed_ms", "wind_gust_ms", "cloud_cover",
-        "precip_mm", "rain_mm"
+        "precip_mm", "rain_mm", "snow_mm"
     ] if c in hourly_merged.columns
 ]
 hourly_merged[float_cols] = hourly_merged[float_cols].round(3)

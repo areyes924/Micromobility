@@ -45,8 +45,17 @@ hourly_model["cluster_day"] = hourly_model["date_id"].astype(int)
 # GLM Poisson Model
 # ======================
 
-# Here we use liquid rain instead of precipitation (it's los angeles.).
-formula = "trip_count ~ temperature_c + rain_mm + weekend_flag + C(region) + C(month) + C(hour)"
+
+
+# Defining formula for model
+formula = ""
+using_snow = not hourly_model["snow_mm"].abs().sum() == 0
+if not using_snow: # snow is all zero
+    formula = "trip_count ~ temperature_c + rain_mm + weekend_flag + C(region) + C(month) + C(hour)"
+    print("snow_mm is all zero: dropping from formula")
+else:
+    formula = "trip_count ~ temperature_c + rain_mm + snow_mm + weekend_flag + C(region) + C(month) + C(hour)"
+    print("using snow in formula")
 
 # Fit (clustered) Poisson Model
 glm = smf.glm(formula=formula, data=hourly_model, family=sm.families.Poisson())
@@ -99,7 +108,11 @@ print(f"Average within-day residual correlation (rho) ≈ {rho:.2f}")
 # ======================
 # Elasticity table
 # ======================
-keep = ["temperature_c", "rain_mm", "weekend_flag"]
+keep = ["temperature_c", "rain_mm", "snow_mm", "weekend_flag"] if using_snow else ["temperature_c", "rain_mm", "weekend_flag"]
+coefs = final_model.params.loc[keep]
+ses = final_model.bse.loc[keep]
+pvals = final_model.pvalues.loc[keep]
+
 coefs = final_model.params.loc[keep]
 ses = final_model.bse.loc[keep]
 pvals = final_model.pvalues.loc[keep]

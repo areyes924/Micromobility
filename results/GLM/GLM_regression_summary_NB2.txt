@@ -3,8 +3,8 @@
 Dep. Variable:             trip_count   No. Observations:                26277
 Model:               NegativeBinomial   Df Residuals:                    26237
 Method:                           MLE   Df Model:                           39
-Date:                Mon, 17 Nov 2025   Pseudo R-squ.:                  0.2918
-Time:                        12:34:21   Log-Likelihood:                -65376.
+Date:                Sat, 03 Jan 2026   Pseudo R-squ.:                  0.2918
+Time:                        00:12:25   Log-Likelihood:                -65376.
 converged:                       True   LL-Null:                       -92310.
 Covariance Type:              cluster   LLR p-value:                     0.000
 ================================================================================================
