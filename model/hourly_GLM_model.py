@@ -19,11 +19,11 @@ nonnegative predictions.
 '''
 
 # Change when you're running the model for different cities
-city = "LA"
-HOURLY_PATH = "data/processed/panels/LA_hourly_24-25.csv"
+# city = "LA"
+# HOURLY_PATH = "data/processed/panels/LA_hourly_24-25.csv"
 
-# city = "NYC"
-# HOURLY_PATH = "data/processed/panels/NYC_hourly_2023.csv"
+city = "NYC"
+HOURLY_PATH = "data/processed/panels/NYC_hourly_2023.csv"
 
 # ======================
 # Define Constant Parameters

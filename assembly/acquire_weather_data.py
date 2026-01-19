@@ -24,9 +24,9 @@ https://open-meteo.com/en/docs/historical-weather-api?start_date=2024-09-23&end_
 '''
 
 # Switch these when making weather data for new regions
-target = "DTLA"
-# TIMEZONE = "America/New_York"
-TIMEZONE = "America/Los_Angeles"
+target = "NYC_North"
+TIMEZONE = "America/New_York"
+# TIMEZONE = "America/Los_Angeles"
 
 # ======================
 # Define Constant Parameters

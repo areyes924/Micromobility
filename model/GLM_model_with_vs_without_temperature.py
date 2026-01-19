@@ -26,11 +26,11 @@ Outputs LL, AIC, BIC, pseudo R2 for full vs reduced specs.
 # Define constants
 # ======================
 
-HOURLY_PATH = "data/processed/panels/LA_hourly_24-25.csv"
-OUT_PATH = "results/GLM/LA/GLM_Full_Vs_Reduced.txt"
+# HOURLY_PATH = "data/processed/panels/LA_hourly_24-25.csv"
+# OUT_PATH = "results/GLM/LA/GLM_Full_Vs_Reduced.txt"
 
-# HOURLY_PATH = "data/processed/panels/NYC_hourly_2023.csv"
-# OUT_PATH = "results/GLM/NYC/GLM_Full_Vs_Reduced.txt"
+HOURLY_PATH = "data/processed/panels/NYC_hourly_2023.csv"
+OUT_PATH = "results/GLM/NYC/GLM_Full_Vs_Reduced.txt"
 DISPERSION_SWITCH = 1.5
 
 # ======================
