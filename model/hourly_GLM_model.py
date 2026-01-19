@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np
 import statsmodels.formula.api as smf
 import statsmodels.api as sm
-import patsy
 import statsmodels.discrete.discrete_model as dm
+import patsy
 import matplotlib.pyplot as plt
+
 
 '''
 Hourly GLM Poisson / NB2 Ridership Model Script
@@ -17,14 +18,20 @@ nonnegative predictions.
 ===========================================================
 '''
 
+# Change when you're running the model for different cities
+city = "LA"
+HOURLY_PATH = "data/processed/panels/LA_hourly_24-25.csv"
+
+# city = "NYC"
+# HOURLY_PATH = "data/processed/panels/NYC_hourly_2023.csv"
+
 # ======================
 # Define Constant Parameters
 # ======================
 
-HOURLY_PATH = "data/processed/panels/hourly_24-25.csv"
-ELASTICITY_TABLE_PATH = "results/GLM/GLM_elasticity_table.csv"
-POISSON_SUMMARY_PATH = "results/GLM/GLM_regression_summary_Poisson.txt"
-NB2_SUMMARY_PATH = "results/GLM/GLM_regression_summary_NB2.txt"
+ELASTICITY_TABLE_PATH = f"results/GLM/{city}/GLM_elasticity_table.csv"
+POISSON_SUMMARY_PATH = f"results/GLM/{city}/GLM_regression_summary_Poisson.txt"
+NB2_SUMMARY_PATH = f"results/GLM/{city}/GLM_regression_summary_NB2.txt"
 DISPERSION_SWITCH = 1.5
 
 # ======================
@@ -95,7 +102,7 @@ print(f"Using {model_label} results for interpretation.\n")
 # ======================
 hourly_model["resid"] = final_model.resid_pearson
 corr_list = []
-for _, g in hourly_model.groupby(hourly_model["date"].dt.strftime("%Y-%m-%d")):
+for _, g in hourly_model.groupby("date"):
     if len(g) > 1:
         c = g["resid"].corr(g["resid"].shift(1))
         if not np.isnan(c):
@@ -109,10 +116,6 @@ print(f"Average within-day residual correlation (rho) ≈ {rho:.2f}")
 # Elasticity table
 # ======================
 keep = ["temperature_c", "rain_mm", "snow_mm", "weekend_flag"] if using_snow else ["temperature_c", "rain_mm", "weekend_flag"]
-coefs = final_model.params.loc[keep]
-ses = final_model.bse.loc[keep]
-pvals = final_model.pvalues.loc[keep]
-
 coefs = final_model.params.loc[keep]
 ses = final_model.bse.loc[keep]
 pvals = final_model.pvalues.loc[keep]
@@ -167,6 +170,6 @@ plt.title(f"Predicted vs. Actual Hourly Trips ({model_label})")
 plt.tight_layout()
 
 tag = "NB2" if dispersion > DISPERSION_SWITCH else "Poisson"
-out_png = f"plots/GLM/predicted_vs_actual_hourly_{tag}.png"
+out_png = f"plots/GLM/{city}_predicted_vs_actual_hourly_{tag}.png"
 plt.savefig(out_png, dpi=300)
 plt.close()

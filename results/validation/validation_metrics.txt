@@ -1,4 +1,0 @@
-Model used: NB2
-Predictive R2: 0.6885
-RMSE: 11.3640
-Mean bias (predicted - actual): -1.5572

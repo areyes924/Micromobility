@@ -23,6 +23,11 @@ https://open-meteo.com/en/docs/historical-weather-api?start_date=2024-09-23&end_
 ===========================================================
 '''
 
+# Switch these when making weather data for new regions
+target = "DTLA"
+# TIMEZONE = "America/New_York"
+TIMEZONE = "America/Los_Angeles"
+
 # ======================
 # Define Constant Parameters
 # ======================
@@ -31,13 +36,18 @@ START = constants.START
 END = constants.END
 tag = constants.TAG
 
-target = "DTLA"
 
 # These are all in the approximate center of the defined regions.
 LAT_LONG = {
     "DTLA": (34.05661, -118.237213), # Union Station Coordinates
     "Westside": (34.022449,-118.438332), # Barrington and National Coordinates
-    "North Hollywood": (34.16552,-118.375153) # North Hollywood Plaza Coordinates
+    "North Hollywood": (34.16552,-118.375153), # North Hollywood Plaza Coordinates
+    # New York (No region given = separation by pure geography)
+    "NYC_South": (40.67423, -73.96989), # Grand Army Plaza (BKN)
+    "NYC_Middle": (40.74847, -73.98544), # Empire State Building
+    "NYC_East": (40.75661, -73.92398), # Somewhere in Queens
+    "NYC_North": (40.82950, -73.92655) # Yankee Stadium
+
 }
 
 LATITUDE = LAT_LONG[target][0]
@@ -63,7 +73,7 @@ params = {
 	"end_date": END,
 	"daily": ["temperature_2m_mean", "rain_sum", "wind_speed_10m_max", "precipitation_sum"],
 	"hourly": ["temperature_2m", "precipitation", "rain", "wind_speed_10m", "wind_gusts_10m", "relative_humidity_2m", "apparent_temperature", "cloud_cover"],
-	"timezone": "America/Los_Angeles",
+	"timezone": TIMEZONE,
 }
 responses = openmeteo.weather_api(url, params=params)
 
@@ -92,7 +102,7 @@ idx_utc = pd.date_range(
     freq =pd.Timedelta(seconds=hourly.Interval()),
     inclusive="left",
 )
-idx_local = idx_utc.tz_convert("America/Los_Angeles")
+idx_local = idx_utc.tz_convert(TIMEZONE)
 idx = idx_local.tz_localize(None)  # naive local time
 
 # Create DataFrame dictionary
