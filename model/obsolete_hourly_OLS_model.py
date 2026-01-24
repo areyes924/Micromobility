@@ -16,11 +16,9 @@ I realized OLS was a bad model to use, prompting me to research other models tha
 # Define Constant Parameters
 # ======================
 
-HOURLY_PATH = "data/processed/panels/hourly_24-25.csv"
-DAILY_PATH = "data/processed/panels/daily_24-25.csv"
+HOURLY_PATH = "data/processed/panels/LA_hourly_24-25.csv"
 REGRESSION_SUMMARY_PATH = "results/OLS/OLS_regression_summary.txt"
 ELASTICITY_TABLE_PATH = "results/OLS/OLS_elasticity_table.csv"
-
 PRED_VS_ACTUAL_PATH = "plots/OLS/predicted_vs_actual_hourly.png"
 
 # ======================
@@ -28,7 +26,6 @@ PRED_VS_ACTUAL_PATH = "plots/OLS/predicted_vs_actual_hourly.png"
 # ======================
 
 hourly = pd.read_csv(HOURLY_PATH)
-# daily = pd.read_csv(DAILY_PATH)
 
 # ======================
 # Minor cleaning
